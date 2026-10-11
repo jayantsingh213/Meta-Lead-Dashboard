@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta Lead Simulator - Real-time Test</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+    .card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    h2 { margin-top: 0; color: #38bdf8; font-size: 22px; display: flex; align-items: center; gap: 8px; }
+    p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; color: #cbd5e1; margin-bottom: 6px; font-weight: 500; }
+    input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 14px; box-sizing: border-box; }
+    input:focus { outline: none; border-color: #38bdf8; }
+    button { width: 100%; padding: 14px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
+    button:hover { background: #1d4ed8; }
+    .toast { display: none; margin-top: 16px; padding: 12px; border-radius: 8px; background: #065f46; color: #34d399; font-size: 14px; text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>⚡ Meta Real-Time Lead Sender</h2>
+  <p>Trigger instant real-time leads directly to your mobile app dashboard.</p>
+  
+  <form id="leadForm">
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="name" value="Rahul Sharma" required>
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="email" value="rahul.sharma@example.com" required>
+    </div>
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="text" id="phone" value="+91 98765 43210" required>
+    </div>
+    <button type="submit" id="submitBtn">🚀 Send Live Lead to Mobile App</button>
+  </form>
+
+  <div class="toast" id="toast">✅ Lead sent! Check your Expo Go app now.</div>
+</div>
+
+<script>
+  document.getElementById('leadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerText = 'Sending...';
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const leadId = 'lead_' + Math.floor(100000 + Math.random() * 900000);
+
+    const payload = {
+      object: 'page',
+      entry: [{
+        id: '1319660054568758',
+        time: Math.floor(Date.now() / 1000),
+        changes: [{
+          value: {
+            created_time: Math.floor(Date.now() / 1000),
+            leadgen_id: leadId,
+            page_id: '1319660054568758',
+            form_id: '123456789',
+            custom_name: name,
+            custom_email: email,
+            custom_phone: phone
+          },
+          field: 'leadgen'
+        }]
+      }]
+    };
+
+    try {
+      await fetch('/webhook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      document.getElementById('toast').style.display = 'block';
+      setTimeout(() => { document.getElementById('toast').style.display = 'none'; }, 4000);
+    } catch (err) {
+      alert('Error sending lead: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerText = '🚀 Send Live Lead to Mobile App';
+    }
+  });
+</script>
+
+</body>
+</html>
